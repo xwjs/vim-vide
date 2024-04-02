@@ -1,4 +1,3 @@
-" ____    ____  __   _______   _______
 " \   \  /   / |  | |       \ |   ____|
 "  \   \/   /  |  | |  .--.  ||  |__
 "   \      /   |  | |  |  |  ||   __|
@@ -6,15 +5,45 @@
 "     \__/     |__| |_______/ |_______|
 "
 
-autocmd BufNewFile *.lua,*.sh,*.php 0r !~/.vim/template.sh %:e
-autocmd BufRead,BufNewFile *.conf setfiletype conf
-autocmd BufRead *.php set includeexpr=substitute(v:fname,'\\\','/','g')
-autocmd BufRead *.php set include=^#\s*use
-autocmd BufRead *.php set suffixesadd+=.php
-autocmd BufWinEnter *.volt,*.tp,*.mako set filetype=html
-autocmd BufWinEnter *.sls set filetype=yaml
-autocmd GUIEnter * silent !wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz
-autocmd FileType php setlocal commentstring=//\ %s
+
+vnoremap <Tab> zf     
+
+
+" 在光标离开当前页面时自动保存文件
+autocmd BufLeave * silent! write
+autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+" 在插入模式下自动插入括号，并将光标放在中间
+inoremap ( ()<Left>
+inoremap [ []<Left>
+inoremap { {}<Left>
+
+
+"shift + hjkl,新建终端
+nnoremap <silent> <S-l> :botright vertical terminal<CR>
+nnoremap <silent> <S-j> :botright terminal<CR>
+nnoremap <silent> <S-k> :topleft termina<CR>
+nnoremap <silent> <S-h> :vertical topleft terminal<CR>
+
+" ctrl + hjkl,新建窗口
+nnoremap <C-h> <C-w>h:vsp<CR>
+nnoremap <C-j> <C-w>j:sp<CR>
+nnoremap <C-k> <C-w>k:sp<CR>
+nnoremap <C-l> <C-w>l:vsp<CR>
+
+
+
+" Map Ctrl + 方向键 to switch cursor between windows
+nnoremap <silent> <C-Up>    :wincmd k<CR>
+nnoremap <silent> <C-Down>  :wincmd j<CR>
+nnoremap <silent> <C-Left>  :wincmd h<CR>
+nnoremap <silent> <C-Right> :wincmd l<CR>
+
+
+" F2 打开关闭 文件树木
+nnoremap <F2> :NERDTreeToggle<CR>
+
+
 call system('mkdir -p ~/.vimtmp/undodir ~/.vimtmp/backupdir ~/.vimtmp/directory')
 colorscheme torte
 filetype on
@@ -39,6 +68,11 @@ nmap <leader>s :set filetype=sh         <CR>
 nmap <leader>t :set filetype=txt        <CR>
 nmap <leader>v :set filetype=vim        <CR>
 nmap <leader>y :set filetype=python     <CR>
+
+
+set clipboard=unnamedplus
+set mouse=a
+set relativenumber
 set ambiwidth=double
 set autoread
 set autowriteall
@@ -46,9 +80,9 @@ set backup
 set bs+=start
 set smartindent cindent autoindent
 set shiftwidth=4 tabstop=4 smarttab
-set clipboard+=unnamed
 set complete-=i
 set cursorline
+
 set expandtab
 set encoding=utf-8 fileencodings=ucs-bom,utf-8,cp936 fileencoding=utf-8
 set foldmethod=manual
@@ -74,6 +108,8 @@ set undodir=~/.vimtmp/undodir
             \ undofile
 set vb t_vb=                                " Turn off bi-sound of vim.
 set wildignore+=*.git\\*,*.tgz,*.zip,*.url,*.pyc,*.class
+set wrap linebreak
+set incsearch
 syntax on
 
 "
@@ -96,27 +132,17 @@ call plug#begin('~/.vim/plug')
 " Plug 'vim-scripts/taglist.vim'
 " Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'wgwoods/vim-systemd-syntax'
-Plug 'leafgarland/typescript-vim'
-Plug 'xolox/vim-misc'
-Plug 'xolox/vim-lua-ftplugin'
-Plug 'pangloss/vim-javascript'
-Plug 'airblade/vim-gitgutter'
-Plug 'posva/vim-vue'
-Plug 'alvan/vim-php-manual'
-Plug 'cespare/vim-toml'
 Plug 'godlygeek/tabular'
 Plug 'kien/ctrlp.vim'
-Plug 'mzlogin/vim-markdown-toc'
-Plug 'plasticboy/vim-markdown'
-Plug 'roxma/vim-paste-easy'
 Plug 'scrooloose/nerdtree'
 Plug 'tmhedberg/matchit'
 Plug 'tpope/vim-commentary'
 Plug 'vim-syntastic/syntastic'
+Plug 'xavierd/clang_complete'
+Plug 'tomasiser/vim-code-dark'
 call plug#end()
 
-let g:vim_markdown_folding_disabled = 1
-let g:gitgutter_max_signs=10000
+let g:clang_library_path='/usr/lib/llvm-14/lib/libclang-14.so.1'
 
 "
 " syntastic
@@ -127,13 +153,7 @@ let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
 let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
 
 "
-" go-vim
-"
-let g:go_version_warning = 0
-let g:go_fmt_autosave = 1
-let g:go_fmt_command = "goimports"
 
-"
 " NERDTree
 "
 let g:NERDTreeDirArrowExpandable  = '@'
@@ -193,3 +213,7 @@ let g:ctrlp_mruf_default_order = 1
 let g:timeStampFormat = '170101'
 let g:timeStampString = '%y%m%d'
 let g:timeStampLeader = 'version'
+
+
+
+colorscheme codedark
